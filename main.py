@@ -8,13 +8,18 @@ from pynput.keyboard import Listener
 from api import FinnhubAPI
 from common import API_KEY
 from curses_config import CursesConfig
+from keyboard import Keyboard
 
 curses_config = CursesConfig()
 STDSCR = curses_config.init_curses()
 KEY_LISTEN = False
 starttime = time.time()
 
+keyboard = Keyboard()
+
+# TODO write low opacity press q to exit?
 def run(key_listen):
+    curses.curs_set(0)
     try:
         x = 0
         while True:
@@ -23,43 +28,69 @@ def run(key_listen):
             STDSCR.refresh()
             x += 1
             if key_listen():
+                curses.curs_set(1)
                 break
     except BaseException as ex:
         print_exc()
 
-GLOBAL_THREAD = Thread(target=run, args=(lambda: KEY_LISTEN,))
+GLOBAL_THREAD = None
+GLOBAL_THREAD_RUNNING = False
     
 def on_press(key):
     global KEY_LISTEN
     global GLOBAL_THREAD
+    global GLOBAL_THREAD_RUNNING
     try:
         if key.char == 'q':
             KEY_LISTEN = True
+            GLOBAL_THREAD_RUNNING = False
             GLOBAL_THREAD.join()
-            print('thread killed')
+            keyboard.stop_listener('backspace')
+            KEY_LISTEN = False
     except AttributeError:
-        print(key)
+        pass
 
-def main():
-    STDSCR.addstr(0,0, f"Press 'n' to view a stock's price.\n--> ")
+def start_quote_thread() -> None:
+    STDSCR.addstr(0,0, f"Enter stock symbol.\n--> ")
     # c = STDSCR.getkey()
     curses.echo()
-    inpt = STDSCR.getstr()
+    _input = STDSCR.getstr().decode('utf-8-sig')
     curses.noecho()
     STDSCR.erase()
     STDSCR.refresh()
 
-    c = 'n'
-    if c == 'n':
-        global GLOBAL_THREAD
+    # TODO check if valid symbol
+    global GLOBAL_THREAD
+    global GLOBAL_THREAD_RUNNING
+    try:
+        GLOBAL_THREAD = Thread(target=run, name='quote_thread', args=(lambda: KEY_LISTEN,))
         GLOBAL_THREAD.start()
+        GLOBAL_THREAD_RUNNING = True
+        keyboard.start_listener(on_press)
+    except BaseException as ex:
+        print_exc()
 
-        listener = Listener(
-            on_press=on_press
-        )
-        listener.start()
+def main():
+    STDSCR.addstr(0,0, "Starting Program...")
+    outer = ''
+    while outer == '':
+        if not GLOBAL_THREAD_RUNNING:
+            STDSCR.addstr(0,0, "Press 'n' to view a stock's price or 'exit' to exit program.")
+            STDSCR.addstr(1,0, "--> ")
+            curses.echo()
+            _input = STDSCR.getstr().decode('utf-8-sig')
+            curses.noecho()
+            STDSCR.erase()
+            STDSCR.refresh()
 
-    # finnhub_api = FinnhubAPI(API_KEY)
+            if _input.lower() == 'exit':
+                outer = ''
+                break
+            elif _input.lower() == 'n':
+                start_quote_thread()
+
+
+    # finnhub_api = FinnhubAPI(API_KEY) f
     # response = finnhub_api.get_quote('amd')
     # print(response)
 
