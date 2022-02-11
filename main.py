@@ -1,6 +1,7 @@
 import time
 import sys
 import atexit
+import curses
 from threading import Thread
 from traceback import print_exc
 from pynput.keyboard import Listener
@@ -40,11 +41,15 @@ def on_press(key):
         print(key)
 
 def main():
-    STDSCR.addstr(0,0, f"Press 'n' to view a stock's price.")
-    c = STDSCR.getkey()
-    STDSCR.deleteln()
+    STDSCR.addstr(0,0, f"Press 'n' to view a stock's price.\n--> ")
+    # c = STDSCR.getkey()
+    curses.echo()
+    inpt = STDSCR.getstr()
+    curses.noecho()
+    STDSCR.erase()
     STDSCR.refresh()
 
+    c = 'n'
     if c == 'n':
         global GLOBAL_THREAD
         GLOBAL_THREAD.start()
