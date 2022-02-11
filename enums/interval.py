@@ -6,4 +6,3 @@ class Interval(Enum):
     TEN_MIN = "10min"
     THIRTY_MIN = "30min"
     SIXTY_MIN = "60min"
-
