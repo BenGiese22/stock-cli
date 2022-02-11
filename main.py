@@ -1,5 +1,5 @@
-import time 
-import curses
+import time
+import sys
 import atexit
 from threading import Thread
 from traceback import print_exc
@@ -40,17 +40,28 @@ def on_press(key):
         print(key)
 
 def main():
-    
-    global GLOBAL_THREAD
-    GLOBAL_THREAD.start()
+    STDSCR.addstr(0,0, f"Press 'n' to view a stock's price.")
+    c = STDSCR.getkey()
+    STDSCR.deleteln()
+    STDSCR.refresh()
 
-    listener = Listener(
-        on_press=on_press
-    )
-    listener.start()
+    if c == 'n':
+        global GLOBAL_THREAD
+        GLOBAL_THREAD.start()
+
+        listener = Listener(
+            on_press=on_press
+        )
+        listener.start()
+
     # finnhub_api = FinnhubAPI(API_KEY)
     # response = finnhub_api.get_quote('amd')
     # print(response)
+
+def global_except_hook(exctype, value, traceback):
+    sys.__excepthook__(exctype, value, traceback)
+
+sys.excepthook = global_except_hook
 
 def exit_handler():
     curses_config.tear_down_curses()
