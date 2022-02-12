@@ -3,7 +3,7 @@ import atexit
 import sys
 
 def main():
-    cli.run_quote()
+    cli.run_cli()
 
 
 def global_except_hook(exctype, value, traceback):

@@ -55,7 +55,7 @@ def start_quote_thread() -> None:
         print_exc()
 
 
-def run_quote():
+def run_cli():
     STDSCR.addstr(0,0, "Starting Program...")
     outer = ''
     while outer == '':
