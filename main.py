@@ -8,9 +8,11 @@ from pynput.keyboard import Listener
 from api import FinnhubAPI
 from common import API_KEY
 from curses_config import CursesConfig
+from thread_manager import ThreadManager
 from keyboard import Keyboard
 
 curses_config = CursesConfig()
+thread_manager = ThreadManager()
 STDSCR = curses_config.init_curses()
 KEY_LISTEN = False
 starttime = time.time()
@@ -33,22 +35,25 @@ def run(key_listen):
     except BaseException as ex:
         print_exc()
 
-GLOBAL_THREAD = None
-GLOBAL_THREAD_RUNNING = False
+# GLOBAL_THREAD = None
+# GLOBAL_THREAD_RUNNING = False
     
 def on_press(key):
     global KEY_LISTEN
-    global GLOBAL_THREAD
-    global GLOBAL_THREAD_RUNNING
+    # global GLOBAL_THREAD
+    # global GLOBAL_THREAD_RUNNING
     try:
         if key.char == 'q':
-            KEY_LISTEN = True
-            GLOBAL_THREAD_RUNNING = False
-            GLOBAL_THREAD.join()
             keyboard.stop_listener('backspace')
+            KEY_LISTEN = True
+            # GLOBAL_THREAD_RUNNING = False
+            # GLOBAL_THREAD.join()
+            thread_manager.join_thread('quote_thread')
             KEY_LISTEN = False
     except AttributeError:
-        pass
+        print_exc()
+    except BaseException:
+        print_exc()
 
 def start_quote_thread() -> None:
     STDSCR.addstr(0,0, f"Enter stock symbol.\n--> ")
@@ -60,12 +65,11 @@ def start_quote_thread() -> None:
     STDSCR.refresh()
 
     # TODO check if valid symbol
-    global GLOBAL_THREAD
-    global GLOBAL_THREAD_RUNNING
     try:
-        GLOBAL_THREAD = Thread(target=run, name='quote_thread', args=(lambda: KEY_LISTEN,))
-        GLOBAL_THREAD.start()
-        GLOBAL_THREAD_RUNNING = True
+        # GLOBAL_THREAD = Thread(target=run, name='quote_thread', args=(lambda: KEY_LISTEN,))
+        # GLOBAL_THREAD.start()
+        # GLOBAL_THREAD_RUNNING = True
+        thread_manager.add_thread(run, 'quote_thread', KEY_LISTEN)
         keyboard.start_listener(on_press)
     except BaseException as ex:
         print_exc()
@@ -74,7 +78,7 @@ def main():
     STDSCR.addstr(0,0, "Starting Program...")
     outer = ''
     while outer == '':
-        if not GLOBAL_THREAD_RUNNING:
+        if not thread_manager.are_threads_running():
             STDSCR.addstr(0,0, "Press 'n' to view a stock's price or 'exit' to exit program.")
             STDSCR.addstr(1,0, "--> ")
             curses.echo()
