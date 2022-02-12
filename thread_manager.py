@@ -1,5 +1,7 @@
 from threading import Thread
 from typing import Callable
+from traceback import print_exc
+import globals
 
 class UnableToFindThreadError(RuntimeError):
     pass
@@ -12,9 +14,9 @@ class ThreadManager:
     def __init__(self) -> None:
         self.threads = []
 
-    def add_thread(self, _target: Callable, _name: str, _listen_arg) -> int:
+    def add_thread(self, _target: Callable, _name: str) -> int:
         # return index? name?
-        thread = Thread(target=_target, name=_name, args=(lambda: _listen_arg, ))
+        thread = Thread(target=_target, name=_name, args=(lambda: globals.KEY_LISTEN, ))
         thread_index = len(self.threads) - 1
         self.threads.append({
             'name': _name,
@@ -29,10 +31,13 @@ class ThreadManager:
         if len(self.threads) == 0:
             raise NoRunningThreadsError('There are no running threads.')
 
-        if type(find_param) is str:
-            self._join_thread_by_name(str(find_param))
-        elif type(find_param) is int:
-            self._join_thread_by_index(int(find_param))
+        try:
+            if type(find_param) is str:
+                self._join_thread_by_name(str(find_param))
+            elif type(find_param) is int:
+                self._join_thread_by_index(int(find_param))
+        except BaseException:
+            print_exc()
 
     def _join_thread_by_name(self, _name: str) -> None:
         found_thread = None
@@ -44,6 +49,7 @@ class ThreadManager:
         if found_thread is None:
             raise UnableToFindThreadError(f"Thread name '{_name}' not found.")
         found_thread.join()
+        print('hit')
         del self.threads[thread_index]
 
 
