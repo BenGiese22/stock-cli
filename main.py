@@ -7,7 +7,11 @@ from traceback import print_exc
 from api import FinnhubAPI
 from common import API_KEY
 from curses_config import CursesConfig
+from thread_manager import ThreadManager
+from keyboard import Keyboard
 
+thread_manager = ThreadManager()
+keyboard = Keyboard()
 curses_config = CursesConfig()
 STDSCR = curses_config.init_curses()
 starttime = time.time()
@@ -32,9 +36,9 @@ def run(key_listen):
 def on_press(key):
     try:
         if key.char == 'q':
-            globals.keyboard.stop_listener('backspace')
+            keyboard.stop_listener('backspace')
             globals.KEY_LISTENER_HIT = True
-            globals.thread_manager.join_thread('quote_thread')
+            thread_manager.join_thread('quote_thread')
             globals.KEY_LISTENER_HIT = False
     except AttributeError:
         print_exc()
@@ -51,8 +55,8 @@ def start_quote_thread() -> None:
 
     # TODO check if valid symbol
     try:
-        globals.thread_manager.add_thread(run, 'quote_thread')
-        globals.keyboard.start_listener(on_press)
+        thread_manager.add_thread(run, 'quote_thread')
+        keyboard.start_listener(on_press)
     except BaseException as ex:
         print_exc()
 
@@ -61,7 +65,7 @@ def main():
     STDSCR.addstr(0,0, "Starting Program...")
     outer = ''
     while outer == '':
-        if not globals.thread_manager.are_threads_running():
+        if not thread_manager.are_threads_running():
             STDSCR.addstr(0,0, "Press 'n' to view a stock's price or 'exit' to exit program.")
             STDSCR.addstr(1,0, "--> ")
             curses.echo()
