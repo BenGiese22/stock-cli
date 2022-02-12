@@ -4,7 +4,6 @@ import atexit
 import curses
 from traceback import print_exc
 from api import FinnhubAPI
-from common import API_KEY
 from curses_config import CursesConfig
 from thread_manager import ThreadManager
 from keyboard import Keyboard
@@ -32,7 +31,7 @@ def run(key_listen):
         print_exc()
 
     
-def on_press(key):
+def quit_quote(key):
     try:
         if key.char == 'q':
             keyboard.stop_listener('backspace')
@@ -53,7 +52,7 @@ def start_quote_thread() -> None:
     # TODO check if valid symbol
     try:
         thread_manager.add_thread(run, 'quote_thread')
-        keyboard.start_listener(on_press)
+        keyboard.start_listener(quit_quote)
     except BaseException as ex:
         print_exc()
 
