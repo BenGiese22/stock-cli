@@ -16,7 +16,7 @@ class ThreadManager:
 
     def add_thread(self, _target: Callable, _name: str) -> int:
         # return index? name?
-        thread = Thread(target=_target, name=_name, args=(lambda: globals.KEY_LISTEN, ))
+        thread = Thread(target=_target, name=_name, args=(lambda: globals.KEY_LISTENER_HIT, ))
         thread_index = len(self.threads) - 1
         self.threads.append({
             'name': _name,
@@ -49,7 +49,6 @@ class ThreadManager:
         if found_thread is None:
             raise UnableToFindThreadError(f"Thread name '{_name}' not found.")
         found_thread.join()
-        print('hit')
         del self.threads[thread_index]
 
 
