@@ -16,7 +16,7 @@ class ThreadManager:
 
     def add_thread(self, _target: Callable, _name: str) -> int:
         thread = Thread(target=_target, name=_name, args=(lambda: globals.KEY_LISTENER_HIT, ))
-        thread_index = len(self.threads) - 1
+        thread_index = len(self.threads)
         self.threads.append({
             'name': _name,
             'thread': thread,
