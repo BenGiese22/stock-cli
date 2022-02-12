@@ -15,13 +15,11 @@ class ThreadManager:
         self.threads = []
 
     def add_thread(self, _target: Callable, _name: str) -> int:
-        # return index? name?
         thread = Thread(target=_target, name=_name, args=(lambda: globals.KEY_LISTENER_HIT, ))
         thread_index = len(self.threads) - 1
         self.threads.append({
             'name': _name,
             'thread': thread,
-            'is_running': True
         })
         thread.start()
         return thread_index
@@ -57,8 +55,6 @@ class ThreadManager:
             raise UnableToFindThreadError(f"Thread index {index} is out of of bounds.")
         self.threads[index].join()
         del self.threads[index]
-        # self.threads[index]['is_running'] = False
-        # Do I want to remove them?
 
     def are_threads_running(self):
         return True if (len(self.threads) > 0) else False

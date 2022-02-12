@@ -2,7 +2,6 @@ import time
 import sys
 import atexit
 import curses
-import globals
 from traceback import print_exc
 from api import FinnhubAPI
 from common import API_KEY
@@ -37,9 +36,7 @@ def on_press(key):
     try:
         if key.char == 'q':
             keyboard.stop_listener('backspace')
-            globals.KEY_LISTENER_HIT = True
             thread_manager.join_thread('quote_thread')
-            globals.KEY_LISTENER_HIT = False
     except AttributeError:
         print_exc()
     except BaseException:
@@ -61,7 +58,6 @@ def start_quote_thread() -> None:
         print_exc()
 
 def main():
-    globals.init()
     STDSCR.addstr(0,0, "Starting Program...")
     outer = ''
     while outer == '':
