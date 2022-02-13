@@ -1,8 +1,7 @@
 import time
 import globals
 from threading import Thread
-from typing import Callable
-from event import Event
+from events.event import Event
 
 class QuoteEvent(Event):
 
@@ -18,7 +17,6 @@ class QuoteEvent(Event):
         self.window.refresh()
 
         # TODO check if valid symbol
-        # self.thread_manager.add_thread(self.run_event, 'quote_thread', _input)
         self.thread = Thread(target=self.run_event, name='quote_thread', args=(lambda: globals.KEY_LISTENER_HIT, _input))
         self.keyboard_controller.start_listener(self.quit_event)
         self.thread.start()
@@ -26,7 +24,6 @@ class QuoteEvent(Event):
     def quit_event(self, key):
         if key.char == 'q':
             self.keyboard_controller.stop_listener('backspace')
-            # self.thread_manager.join_thread('quote_thread')
             self.thread.join()
 
     def run_event(self, key_listen, stock_symbol):
