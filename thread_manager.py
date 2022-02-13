@@ -55,6 +55,3 @@ class ThreadManager:
             raise UnableToFindThreadError(f"Thread index {index} is out of of bounds.")
         self.threads[index].join()
         del self.threads[index]
-
-    def are_threads_running(self):
-        return True if (len(self.threads) > 0) else False

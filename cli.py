@@ -1,10 +1,13 @@
 # import time
-import curses
+# import curses
+from threading import active_count
 # from traceback import print_exc
-from api import FinnhubAPI
+# from api import FinnhubAPI
 # from curses_config import CursesConfig
 
-from event_handler import EventHandler
+# from event_handler import EventHandler
+from events.event import Event
+from events.quote_event import QuoteEvent
 # from thread_manager import ThreadManager
 # from keyboard_controller import Keyboard
 
@@ -58,15 +61,17 @@ from event_handler import EventHandler
 
 
 def run_cli():
-    event_handler = EventHandler()
+    quote_event = QuoteEvent()
+    # event_handler = EventHandler()
     # STDSCR.addstr(0,0, "Starting Program...")
     outer = ''
     while outer == '':
-        if not event_handler.event_running():
-            _input = event_handler.get_master_input()
+        # if not event_handler.event_running():
+        if active_count() > 1:
+            _input = Event.get_master_input()
 
             if _input.lower() == 'exit':
                 outer = ''
                 break
             elif _input.lower() == 'n':
-                event_handler.start_quote()
+                quote_event.start_event()
