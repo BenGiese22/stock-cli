@@ -1,7 +1,9 @@
 import time
 from keyboard_controller import KeyboardController
 from curses_config import CursesConfig
+import threading
 
+EVENT_NAMES = ['watchlist_thread']
 
 class Event:
 
@@ -20,12 +22,22 @@ class Event:
     def run_event(self):
         pass
 
+    def is_master_thread(self) -> bool:
+        for thread in threading.enumerate():
+            thread_name = thread.name
+            if thread_name in EVENT_NAMES:
+                return True
+        return False
+                
+
     def get_master_input(self) -> str:
-        self.window.addstr(0,0, "Press 'n' to view a stock's price or 'exit' to exit program.")
-        self.window.addstr(1,0, "--> ")
-        self.curses_config.echo()
-        _input = self.window.getstr().decode('utf-8-sig')
-        self.curses_config.noecho()
         self.window.erase()
         self.window.refresh()
+        self.window.addstr(0,0, "Commands:")
+        self.window.addstr(1,0, "- 'x' to exit.")
+        self.window.addstr(2,0, "- 'w' to view watchlist.")
+        self.window.addstr(3,0, "- 'a' to add symbol to watchlist.")
+        self.curses_config.noecho()
+        _input = self.window.getkey()
+        self.curses_config.echo()
         return _input

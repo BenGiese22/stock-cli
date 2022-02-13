@@ -1,19 +1,18 @@
-from threading import active_count
 from events.event import Event
-from events.quote_event import QuoteEvent
-
+from events.watchlist_event import WatchlistEvent
 
 def run_cli():
     base_event = Event()
-    quote_event = QuoteEvent()
+    watchlist_event = WatchlistEvent()
     outer = ''
     while outer == '':
-        thread_count = active_count()
-        if thread_count <= 6:
+        event_running = base_event.is_master_thread()
+        if not event_running:
             _input = base_event.get_master_input()
 
-            if _input.lower() == 'exit':
-                outer = ''
-                break
-            elif _input.lower() == 'n':
-                quote_event.start_event()
+        if _input.lower() == 'x':
+            outer = ''
+            break
+        elif _input.lower() == 'w':
+            watchlist_event.start_event()
+            _input = ''
