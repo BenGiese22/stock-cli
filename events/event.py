@@ -1,0 +1,31 @@
+import time
+from keyboard_controller import KeyboardController
+from curses_config import CursesConfig
+
+
+class Event:
+
+    def __init__(self):
+        self.keyboard_controller = KeyboardController()
+        self.curses_config = CursesConfig()
+        self.window = self.curses_config.init_window()
+        self.starttime = time.time()   
+
+    def start_event(self):
+        pass
+
+    def stop_event(self):
+        pass
+
+    def run_event(self):
+        pass
+
+    def get_master_input(self) -> str:
+        self.window.addstr(0,0, "Press 'n' to view a stock's price or 'exit' to exit program.")
+        self.window.addstr(1,0, "--> ")
+        self.curses_config.echo()
+        _input = self.window.getstr().decode('utf-8-sig')
+        self.curses_config.noecho()
+        self.window.erase()
+        self.window.refresh()
+        return _input
