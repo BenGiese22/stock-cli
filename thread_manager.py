@@ -14,8 +14,8 @@ class ThreadManager:
     def __init__(self) -> None:
         self.threads = []
 
-    def add_thread(self, _target: Callable, _name: str) -> int:
-        thread = Thread(target=_target, name=_name, args=(lambda: globals.KEY_LISTENER_HIT, ))
+    def add_thread(self, _target: Callable, _name: str, stock_symbol: str) -> int:
+        thread = Thread(target=_target, name=_name, args=(lambda: globals.KEY_LISTENER_HIT, stock_symbol))
         thread_index = len(self.threads)
         self.threads.append({
             'name': _name,

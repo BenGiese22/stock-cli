@@ -1,7 +1,7 @@
 import globals
 from pynput.keyboard import Listener, Key, Controller
 
-class Keyboard():
+class KeyboardController():
 
     def __init__(self) -> None:
         self.listener = None
