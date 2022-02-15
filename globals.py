@@ -3,4 +3,4 @@ global KEY_LISTENER_HIT
 KEY_LISTENER_HIT = False
 
 global WATCHLIST
-WATCHLIST = {'spy'}
+WATCHLIST = ['spy']

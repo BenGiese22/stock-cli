@@ -28,11 +28,17 @@ class WatchlistEvent(Event):
     def run_event(self, key_listen):
         self.window.erase()
         self.window.refresh()
-        x = 0
         while True:
-            self.window.addstr(0, 0, f"hit - {x} - {'amd'}", self.curses_config.get_green_color_pair())
+            for index, symbol in enumerate(globals.WATCHLIST):
+                stock_data = self.stock_api.get_quote(symbol)
+                close = stock_data['c']
+                change = float(stock_data['d'])
+                percent_change = round(float(stock_data['dp']), 2)
+                if change < 0.00:
+                    self.window.addstr(index, 0, f"{symbol.upper()} - ${close} {change} {percent_change}%", self.curses_config.get_red_color_pair())
+                else:
+                    self.window.addstr(index, 0, f"{symbol.upper()} - ${close} {change} {percent_change}%", self.curses_config.get_green_color_pair())
             time.sleep(1.00 - ((time.time() - self.starttime) % 1.00))
             self.window.refresh()
-            x += 1
             if key_listen():
                 break

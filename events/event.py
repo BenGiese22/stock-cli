@@ -36,7 +36,7 @@ class Event:
         self.window.addstr(0,0, "Commands:")
         self.window.addstr(1,0, "- 'x' to exit.")
         self.window.addstr(2,0, "- 'w' to view watchlist.")
-        self.window.addstr(3,0, "- 'a' to add symbol to watchlist.")
+        self.window.addstr(3,0, "- 'n' to add symbol to watchlist.")
         self.curses_config.noecho()
         _input = self.window.getkey()
         self.curses_config.echo()
