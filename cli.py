@@ -1,11 +1,9 @@
 from events.event import Event
 from events.watchlist_event import WatchlistEvent
-from events.add_to_watchlist_event import AddToWatchlistEvent
 
 def run_cli():
     base_event = Event()
     watchlist_event = WatchlistEvent()
-    add_to_watchlist_event = AddToWatchlistEvent()
     outer = ''
     while outer == '':
         event_running = base_event.is_master_thread()
@@ -19,5 +17,8 @@ def run_cli():
             watchlist_event.start_event()
             _input = ''
         elif _input.lower() == 'n':
-            add_to_watchlist_event.start_event()
+            watchlist_event.add_to_watchlist()
+            _input = ''
+        elif _input.lower() == 'd':
+            watchlist_event.delete_from_watchlist()
             _input = ''

@@ -42,3 +42,31 @@ class WatchlistEvent(Event):
             self.window.refresh()
             if key_listen():
                 break
+
+    def add_to_watchlist(self) -> None:
+        valid_symbol = False
+        while not valid_symbol:   
+            self.window.erase()
+            self.window.refresh()
+            self.window.addstr(0,0, "Enter Stock Symbol\n--> ")
+            self.curses_config.echo()
+            self.curses_config.set_cursor(1)
+            _input = self.window.getstr().decode('utf-8-sig')
+            self.curses_config.set_cursor(0)
+            self.curses_config.noecho()
+            valid_symbol = self.stock_api.validate_symbol(_input)
+        globals.WATCHLIST.append(_input)
+
+    def delete_from_watchlist(self) -> None:
+        symbol_in_watchlist = False
+        while not symbol_in_watchlist:
+            self.window.erase()
+            self.window.refresh()
+            self.window.addstr(0,0, "Enter Stock Symbol to remove\n--> ")
+            self.curses_config.echo()
+            self.curses_config.set_cursor(1)
+            _input = self.window.getstr().decode('utf-8-sig')
+            self.curses_config.set_cursor(0)
+            self.curses_config.noecho()
+            symbol_in_watchlist = True if _input.lower() in globals.WATCHLIST else False
+        globals.WATCHLIST.remove(_input.lower())
