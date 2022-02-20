@@ -45,10 +45,8 @@ class GraphEvent(Event):
             pass
 
     def run_event(self, key_listen):
-        size = os.get_terminal_size()
-        y = plt.sin() # sinusoidal signal 
-        # plt.limit_size(size.columns-10, size.lines-10)
-        plt.scatter(y)
+        stock_data = self.stock_api.get_intraday(globals.GRAPH_SYMBOL.lower())
+        plt.plot(stock_data)
         plt.title(globals.GRAPH_SYMBOL.upper())
         plt.clear_terminal()
         plt.show()

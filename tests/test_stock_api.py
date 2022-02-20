@@ -23,3 +23,7 @@ class TestStockAPICase(unittest.TestCase):
         response = self.stock_api.get_quote('xxx')
         self.assertEqual(response['d'], None)
         self.assertEqual(response['c'], 0)
+
+    def test_intraday(self):
+        response = self.stock_api.get_intraday('amd')
+        self.assertEqual(type(response), list)
