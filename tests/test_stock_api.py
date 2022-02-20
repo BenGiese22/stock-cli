@@ -1,11 +1,10 @@
 import unittest
-from common import API_KEY
 from stock_api import StockAPI
 
 class TestStockAPICase(unittest.TestCase):
 
     def setUp(self):
-        self.stock_api = StockAPI(API_KEY)
+        self.stock_api = StockAPI()
 
     def test_validate_valid_symbol(self):
         is_valid = self.stock_api.validate_symbol('amd')

@@ -1,17 +1,15 @@
 import time
-import os
 import globals
 from threading import Thread
 from events.event import Event
 from stock_api import StockAPI
-from common import API_KEY
 import plotext as plt
 
 class GraphEvent(Event):
 
     def __init__(self):
         super().__init__()
-        self.stock_api = StockAPI(API_KEY)
+        self.stock_api = StockAPI()
 
 
     def specify_symbol(self) -> None:
@@ -45,12 +43,17 @@ class GraphEvent(Event):
             pass
 
     def run_event(self, key_listen):
-        stock_data = self.stock_api.get_intraday(globals.GRAPH_SYMBOL.lower())
-        plt.plot(stock_data)
-        plt.title(globals.GRAPH_SYMBOL.upper())
-        plt.clear_terminal()
-        plt.show()
+        self.init_plot()
         while True:
             time.sleep(1.00 - ((time.time() - self.starttime) % 1.00))
             if key_listen():
                 break
+
+
+    def init_plot(self) -> None:
+        stock_data, datetimes = self.stock_api.get_intraday(globals.GRAPH_SYMBOL.lower())
+        plt.plot_date(datetimes, stock_data)
+        plt.title(globals.GRAPH_SYMBOL.upper())
+        plt.xlabel("Intraday")
+        plt.ylabel("Stock Price $")
+        plt.show()
