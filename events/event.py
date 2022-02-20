@@ -3,7 +3,7 @@ from keyboard_controller import KeyboardController
 from curses_config import CursesConfig
 import threading
 
-EVENT_NAMES = ['watchlist_thread']
+EVENT_NAMES = ['watchlist_thread', 'graph_thread']
 
 class Event:
 
@@ -38,6 +38,7 @@ class Event:
         self.window.addstr(2,0, "- 'w' to view watchlist.")
         self.window.addstr(3,0, "- 'n' to add symbol to watchlist.")
         self.window.addstr(4,0, "- 'd' to remove symbol from watchlist.")
+        self.window.addstr(5,0, "- 'g' to view graph of symbol.")
         self.curses_config.noecho()
         _input = self.window.getkey()
         self.curses_config.echo()

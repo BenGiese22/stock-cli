@@ -1,9 +1,11 @@
 from events.event import Event
 from events.watchlist_event import WatchlistEvent
+from events.graph_event import GraphEvent
 
 def run_cli():
     base_event = Event()
     watchlist_event = WatchlistEvent()
+    graph_event = GraphEvent()
     outer = ''
     while outer == '':
         event_running = base_event.is_master_thread()
@@ -21,4 +23,7 @@ def run_cli():
             _input = ''
         elif _input.lower() == 'd':
             watchlist_event.delete_from_watchlist()
+            _input = ''
+        elif _input.lower() == 'g':
+            graph_event.start_event()
             _input = ''

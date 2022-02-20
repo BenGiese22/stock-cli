@@ -16,7 +16,6 @@ Graphing Commands, see on-going stock information.
     - plotext
     - termplotlib
     - uniplot
-    - termplot
     - terminalplot
 
 Colored text - use "Colorama"

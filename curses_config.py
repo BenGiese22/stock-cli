@@ -46,3 +46,6 @@ class CursesConfig:
 
     def noecho(self) -> None:
         curses.noecho()
+
+    def disable(self) -> None:
+        curses.endwin()
