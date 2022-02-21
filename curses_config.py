@@ -19,8 +19,8 @@ class CursesConfig:
         curses.use_default_colors()
         curses.noecho()
         curses.cbreak()
-        curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
-        curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
+        curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_WHITE)
+        curses.init_pair(2, curses.COLOR_RED, curses.COLOR_WHITE)
         self.set_cursor(0)
         return stdscr
 
