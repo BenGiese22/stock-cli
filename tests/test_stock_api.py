@@ -1,11 +1,10 @@
 import unittest
-from common import API_KEY
 from stock_api import StockAPI
 
 class TestStockAPICase(unittest.TestCase):
 
     def setUp(self):
-        self.stock_api = StockAPI(API_KEY)
+        self.stock_api = StockAPI()
 
     def test_validate_valid_symbol(self):
         is_valid = self.stock_api.validate_symbol('amd')
@@ -23,3 +22,7 @@ class TestStockAPICase(unittest.TestCase):
         response = self.stock_api.get_quote('xxx')
         self.assertEqual(response['d'], None)
         self.assertEqual(response['c'], 0)
+
+    def test_intraday(self):
+        response = self.stock_api.get_intraday('amd')
+        self.assertEqual(type(response), list)

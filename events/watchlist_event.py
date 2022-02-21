@@ -3,13 +3,12 @@ import globals
 from threading import Thread
 from events.event import Event
 from stock_api import StockAPI
-from common import API_KEY
 
 class WatchlistEvent(Event):
 
     def __init__(self):
         super().__init__()
-        self.stock_api = StockAPI(API_KEY)
+        self.stock_api = StockAPI()
 
 
     def start_event(self):

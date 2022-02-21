@@ -2,10 +2,11 @@
 DEBUG = True
 
 if DEBUG:
-    API_KEY = 'sandbox_c837q2qad3ift3bm38e0'
+    FINNHUB_API_KEY = 'sandbox_c837q2qad3ift3bm38e0'
 else:
-    API_KEY = 'c837q2qad3ift3bm38dg'
+    FINNHUB_API_KEY = 'c837q2qad3ift3bm38dg'
 
+ALPHA_VANTAGE_API_KEY = 'T9N0WM17ULYZHHPM'
 
 """
 Request API Key on init load. Validate it. Store it for continous use. 
@@ -16,7 +17,6 @@ Graphing Commands, see on-going stock information.
     - plotext
     - termplotlib
     - uniplot
-    - termplot
     - terminalplot
 
 Colored text - use "Colorama"
