@@ -1,9 +1,11 @@
+from command_prompter import CommandPrompter
 from events.event import Event
 from events.watchlist_event import WatchlistEvent
 from events.graph_event import GraphEvent
 from common import TimeSeries
 
 def run_cli():
+    command_prompter = CommandPrompter()
     base_event = Event()
     watchlist_event = WatchlistEvent()
     graph_event = GraphEvent()
@@ -11,7 +13,7 @@ def run_cli():
     while outer == '':
         event_running = base_event.is_master_thread()
         if not event_running:
-            _input = base_event.get_master_input()
+            command_selected = command_prompter.prompt_user()
 
         if _input.lower() == 'x':
             outer = ''

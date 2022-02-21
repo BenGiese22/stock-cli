@@ -55,20 +55,3 @@ class Event:
                 return True
         return False
                 
-
-    def get_master_input(self) -> str:
-        self.window.erase()
-        self.window.refresh()
-        self._print_commands()
-        self.curses_config.noecho()
-        _input = self.window.getkey()
-        self.curses_config.echo()
-        return _input
-
-    def _print_commands(self) -> None:
-        line_index = 0
-        for key in COMMANDS:
-            for command in COMMANDS[key]['commands']:
-                self.window.addstr(line_index, 0, command)
-                line_index += 1
-            line_index += 1
