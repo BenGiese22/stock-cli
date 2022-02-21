@@ -1,10 +1,11 @@
-import cli
 import atexit
 import sys
+from command_prompter import CommandPrompter
 from curses_config import CursesConfig
 
 def main():
-    cli.run_cli()
+    command_prompter = CommandPrompter()
+    command_prompter.run_cli()
 
 
 def global_except_hook(exctype, value, traceback):

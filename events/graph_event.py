@@ -1,12 +1,12 @@
 import time
 import globals
 from threading import Thread
-from events.event import Event
+from events.base_event import BaseEvent
 from stock_api import StockAPI
 from common import TimeSeries
 import plotext as plt
 
-class GraphEvent(Event):
+class GraphEvent(BaseEvent):
 
     def __init__(self):
         super().__init__()

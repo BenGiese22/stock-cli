@@ -1,17 +1,31 @@
 import time
 import globals
 from threading import Thread
-from events.event import Event
+from events.base_event import BaseEvent
 from stock_api import StockAPI
 
-class WatchlistEvent(Event):
+class WatchlistEvent(BaseEvent):
 
     def __init__(self):
         super().__init__()
         self.stock_api = StockAPI()
+        self.commands = [
+            {
+                'command_name': 'View Watchlist',
+                'command_func': self.view_watchlist_command
+            },
+            {
+                'command_name': 'Add to Watchlist',
+                'command_func': self.add_to_watchlist_command
+            },
+            {
+                'command_name': 'Delete from Watchlist',
+                'command_func': self.delete_from_watchlist_command
+            }
+        ]
 
 
-    def start_event(self):
+    def view_watchlist_command(self):
         self.thread = Thread(target=self.run_event, name='watchlist_thread', args=(lambda: globals.KEY_LISTENER_HIT, ))
         self.thread.start()
         self.keyboard_controller.start_listener(self.quit_event)
@@ -42,7 +56,7 @@ class WatchlistEvent(Event):
             if key_listen():
                 break
 
-    def add_to_watchlist(self) -> None:
+    def add_to_watchlist_command(self) -> None:
         valid_symbol = False
         while not valid_symbol:   
             self.window.erase()
@@ -56,7 +70,7 @@ class WatchlistEvent(Event):
             valid_symbol = self.stock_api.validate_symbol(_input)
         globals.WATCHLIST.append(_input)
 
-    def delete_from_watchlist(self) -> None:
+    def delete_from_watchlist_command(self) -> None:
         symbol_in_watchlist = False
         while not symbol_in_watchlist:
             self.window.erase()
