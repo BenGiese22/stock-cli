@@ -24,7 +24,8 @@ COMMANDS = {
     'graph': {
         'commands': [
             "Graph Commands:",
-            "- 'g' to view graph of symbol.",
+            "- 'g' to view intraday graph of symbol.",
+            "- 'm' to view monthly graph of symbol.",
             "  - press 'q' while in graph view to exit."
         ]
     }

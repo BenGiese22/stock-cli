@@ -1,3 +1,4 @@
+from enum import Enum
 
 DEBUG = True
 
@@ -7,6 +8,11 @@ else:
     FINNHUB_API_KEY = 'c837q2qad3ift3bm38dg'
 
 ALPHA_VANTAGE_API_KEY = 'T9N0WM17ULYZHHPM'
+
+class TimeSeries(Enum):
+    INTRADAY = "TIME_SERIES_INTRADAY"
+    MONTHLY = "TIME_SERIES_MONTHLY"
+
 
 """
 Request API Key on init load. Validate it. Store it for continous use. 

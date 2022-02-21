@@ -1,6 +1,7 @@
 from events.event import Event
 from events.watchlist_event import WatchlistEvent
 from events.graph_event import GraphEvent
+from common import TimeSeries
 
 def run_cli():
     base_event = Event()
@@ -25,5 +26,8 @@ def run_cli():
             watchlist_event.delete_from_watchlist()
             _input = ''
         elif _input.lower() == 'g':
-            graph_event.start_event()
+            graph_event.start_event(TimeSeries.INTRADAY)
+            _input = ''
+        elif _input.lower() == 'm':
+            graph_event.start_event(TimeSeries.MONTHLY)
             _input = ''

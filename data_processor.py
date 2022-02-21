@@ -1,7 +1,6 @@
 import datetime
 from typing import Tuple
 
-FROM_FORMAT = '%Y-%m-%d %H:%M:%S' #2022/02/18 11:45:00
 TO_FORMAT = '%d/%m/%Y %H:%M:%S'
 
 class DataProcessor:
@@ -9,19 +8,27 @@ class DataProcessor:
     def __init__(self) -> None:
         pass
 
-    def process_intraday_data(self, intraday_data: dict) -> Tuple[list, list]:
-        time_series = intraday_data['Time Series (5min)'] # TODO Make dynamic
+    def process_data(self, data_set: dict) -> Tuple[list, list]:
+        if 'Time Series (5min)' in data_set:
+            from_format = '%Y-%m-%d %H:%M:%S' #2022/02/18 11:45:00
+            return self._process(data_set, 'Time Series (5min)', from_format)
+        elif 'Monthly Time Series' in data_set:
+            from_format = '%Y-%m-%d'
+            return self._process(data_set, 'Monthly Time Series', from_format)
+        return [], []
+
+    def _process(self, data_set: dict, time_series: str, from_format: str) -> Tuple[list, list]:
+        time_series = data_set[time_series]
         closing_data = []
         dts = []
-        for key in time_series:
-            time_segment = time_series[key]
+        for dt_key in time_series:
+            time_segment = time_series[dt_key]
             closing_data.append(float(time_segment['4. close']))
-            dts.append(self._format_datetime(key))
-        # Reverse data so data starts from earliest datetime.
+            dts.append(self._format_datetime(dt_key, from_format, TO_FORMAT))
         reversed_data = closing_data[::-1]
         reversed_dts = dts[::-1]
         return reversed_data, reversed_dts
 
-    def _format_datetime(self, _datetime: str) -> str:
-        dt = datetime.datetime.strptime(_datetime, FROM_FORMAT)
-        return dt.strftime(TO_FORMAT)
+    def _format_datetime(self, _datetime: str, from_format: str, to_format: str) -> str:
+        dt = datetime.datetime.strptime(_datetime, from_format)
+        return dt.strftime(to_format)
