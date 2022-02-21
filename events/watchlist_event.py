@@ -33,10 +33,10 @@ class WatchlistEvent(Event):
                 close = stock_data['c']
                 change = float(stock_data['d'])
                 percent_change = round(float(stock_data['dp']), 2)
-                if change < 0.00:
-                    self.window.addstr(index, 0, f"{symbol.upper()} - ${close} {change} {percent_change}%", self.curses_config.get_red_color_pair())
-                else:
-                    self.window.addstr(index, 0, f"{symbol.upper()} - ${close} {change} {percent_change}%", self.curses_config.get_green_color_pair())
+                self.window.addstr(index, 0,
+                    f"{symbol.upper()} - ${close}  Change: {change}  %Change: {percent_change}%",
+                    self.curses_config.get_red_color_pair() if change < 0.00 else self.curses_config.get_green_color_pair()
+                )
             time.sleep(1.00 - ((time.time() - self.starttime) % 1.00))
             self.window.refresh()
             if key_listen():

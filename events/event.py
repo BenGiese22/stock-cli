@@ -5,6 +5,31 @@ import threading
 
 EVENT_NAMES = ['watchlist_thread', 'graph_thread']
 
+COMMANDS = {
+    'basic': {
+        'commands': [
+            "Basic Commands:",
+            "- 'x' to exit."
+        ]
+    },
+    'watchlist': {
+        'commands': [
+            "Watchlist Commands:",
+            "- 'w' to view watchlist.",
+            "  - press 'q' while in watchlist view to exit.",
+            "- 'n' to add symbol to watchlist.",
+            "- 'd' to remove symbol from watchlist."
+        ]
+    },
+    'graph': {
+        'commands': [
+            "Graph Commands:",
+            "- 'g' to view graph of symbol.",
+            "  - press 'q' while in graph view to exit."
+        ]
+    }
+}
+
 class Event:
 
     def __init__(self):
@@ -33,13 +58,16 @@ class Event:
     def get_master_input(self) -> str:
         self.window.erase()
         self.window.refresh()
-        self.window.addstr(0,0, "Commands:")
-        self.window.addstr(1,0, "- 'x' to exit.")
-        self.window.addstr(2,0, "- 'w' to view watchlist.")
-        self.window.addstr(3,0, "- 'n' to add symbol to watchlist.")
-        self.window.addstr(4,0, "- 'd' to remove symbol from watchlist.")
-        self.window.addstr(5,0, "- 'g' to view graph of symbol.")
+        self._print_commands()
         self.curses_config.noecho()
         _input = self.window.getkey()
         self.curses_config.echo()
         return _input
+
+    def _print_commands(self) -> None:
+        line_index = 0
+        for key in COMMANDS:
+            for command in COMMANDS[key]['commands']:
+                self.window.addstr(line_index, 0, command)
+                line_index += 1
+            line_index += 1
