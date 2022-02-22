@@ -1,6 +1,7 @@
 import time
 import globals
 from threading import Thread
+from typing import Callable
 from events.base_event import BaseEvent
 from stock_api import StockAPI
 from common import TimeSeries
@@ -11,9 +12,48 @@ class GraphEvent(BaseEvent):
     def __init__(self):
         super().__init__()
         self.stock_api = StockAPI()
+        self.commands = [
+            {
+                'command_name': 'View Intraday Graph',
+                'command_func': self.view_intraday_graph_command
+            },
+            {
+                'command_name': 'View Monthly Graph',
+                'command_func': self.view_monthly_graph_command
+            }
+        ]
 
+    def view_intraday_graph_command(self) -> None:
+        self.start_event(TimeSeries.INTRADAY)
 
-    def specify_symbol(self) -> None:
+    def view_monthly_graph_command(self) -> None:
+        self.start_event(TimeSeries.MONTHLY)
+
+    def start_event(self, time_series: TimeSeries):
+        self._specify_symbol()
+        self.curses_config.disable()
+        event_func = self._get_event_func(time_series)
+        self.thread = Thread(target=event_func, name='graph_thread', args=(lambda: globals.KEY_LISTENER_HIT, ))
+        self.thread.start()
+        self.keyboard_controller.start_listener(self.quit_event)
+
+    def _get_event_func(self, time_series: TimeSeries) -> Callable:
+        if time_series is TimeSeries.INTRADAY:
+            return self.run_intraday_event
+        return self.run_monthly_event
+
+    def quit_event(self, key):
+        try:
+            if key.char == 'q':
+                plt.clear_plot()
+                plt.clear_terminal()
+                self.keyboard_controller.stop_listener('backspace')
+                self.thread.join()
+                self.curses_config.init_window()
+        except AttributeError as ae:
+            pass
+
+    def _specify_symbol(self) -> None:
         valid_symbol = False
         while not valid_symbol:   
             self.window.erase()
@@ -26,27 +66,6 @@ class GraphEvent(BaseEvent):
             self.curses_config.noecho()
             valid_symbol = self.stock_api.validate_symbol(_input)
         globals.GRAPH_SYMBOL = _input.lower()
-
-    def start_event(self, time_series: TimeSeries):
-        self.specify_symbol()
-        self.curses_config.disable()
-        event_func = None
-        if time_series is TimeSeries.INTRADAY:
-            event_func = self.run_intraday_event
-        else:
-            event_func = self.run_monthly_event
-        self.thread = Thread(target=event_func, name='graph_thread', args=(lambda: globals.KEY_LISTENER_HIT, ))
-        self.thread.start()
-        self.keyboard_controller.start_listener(self.quit_event)
-
-    def quit_event(self, key):
-        try:
-            if key.char == 'q':
-                self.keyboard_controller.stop_listener('backspace')
-                self.thread.join()
-                self.curses_config.init_window()
-        except AttributeError as ae:
-            pass
 
     def run_intraday_event(self, key_listen):
         self.init_intraday_plot()
@@ -68,6 +87,7 @@ class GraphEvent(BaseEvent):
         plt.title(globals.GRAPH_SYMBOL.upper())
         plt.xlabel("Intraday")
         plt.ylabel("Stock Price $")
+        plt.clear_terminal()
         plt.show()
 
     def init_monthly_plot(self) -> None:
@@ -76,4 +96,5 @@ class GraphEvent(BaseEvent):
         plt.title(globals.GRAPH_SYMBOL.upper())
         plt.xlabel("Monthly")
         plt.ylabel("Stock Price $")
+        plt.clear_terminal()
         plt.show()

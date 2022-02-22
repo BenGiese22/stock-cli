@@ -25,7 +25,6 @@ class _Getch:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
 
-# Make this into the cli
 class CommandPrompter:
 
     def __init__(self) -> None:
@@ -41,6 +40,8 @@ class CommandPrompter:
         while(1):
             event_running = self.base_event.is_master_thread()
             if not event_running:
+                self.window.erase()
+                self.window.refresh()
                 command_selected = self.prompt_user()
                 command_func = self.commands[command_selected]['command_func']
                 command_func()
@@ -67,7 +68,7 @@ class CommandPrompter:
                 return to_be
         elif k == Keys.DOWN.value:
             to_be = current_selected + 1
-            if to_be > len(self.commands):
+            if to_be >= len(self.commands):
                 return current_selected
             elif self.commands[to_be] == '':
                 return to_be + 1
@@ -86,19 +87,12 @@ class CommandPrompter:
                 self.window.addstr(index, 0, command['command_name'])
         self.window.refresh()
 
-    # def _print_commands(self, command_selected: int) -> None:
-    #     self.window.erase()
-    #     line_index = 0
-    #     for command_group in self.commands:
-    #         commands = self.commands[command_group]
-            
-
 
     def _init_commands(self) -> list:
         commands = []
-        # commands.extend(self.watchlist_event.get_commands())
-        # commands.extend(self.event.get_commands())
         commands.extend(self.watchlist_event.get_commands())
+        commands.append('')
+        commands.extend(self.graph_event.get_commands())
         commands.append('')
         commands.extend(self.base_event.get_commands())
         return commands

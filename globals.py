@@ -1,9 +1,9 @@
 
+# --- Cross-Program Globals ---
 global KEY_LISTENER_HIT
 KEY_LISTENER_HIT = False
 
+
+# --- Watchlist Globals ---
 global WATCHLIST
 WATCHLIST = ['spy']
-
-global GRAPH_SYMBOL
-GRAPH_SYMBOL = 'spy'
